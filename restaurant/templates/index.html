@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+
+{% block body %}
+  <div class="cover-container m-auto text-light">
+    <main role="main" class="inner cover">
+      <h1 class="cover-heading">Restaurant</h1>
+      
+      {% if session.admin %}
+        <p class="lead">Welcome to our Restaurant.</p>
+        <p class="lead">
+          <a href="/reservation" class="btn btn-lg btn-light">Reservations</a>
+          <a href="/order" class="btn btn-lg btn-light">Orders</a>
+          <a href="/payment" class="btn btn-lg btn-light">Payment</a>
+        </p>
+        <p class="lead">
+          <a href="/table" class="btn btn-lg btn-light">Tables</a>
+          <a href="/fnb" class="btn btn-lg btn-light">FnBs</a>
+        </p>
+      {% else %}
+      
+        <!-- {% if not session.is_paid %} -->
+        <p class="lead">Welcome to our Restaurant.</p>
+        <p class="lead">
+          <a href="/reservation" class="btn btn-lg btn-light">Make Reservation</a>
+          <a href="/order" class="btn btn-lg btn-light">Take Order</a>
+          <a href="/payment" class="btn btn-lg btn-light">Payment</a>
+          <p class="lead">
+            <a href="/login" class="btn btn-lg btn-dark">Login</a>
+          </p>
+        </p>
+        <!-- {% elif session.is_paid == 1 %}
+          <p class="lead">Thank you for your visit</p>
+        {% endif %} -->
+        
+      {% endif %}
+      
+    </main>
+  </div>
+{% endblock body %}

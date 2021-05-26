@@ -1,0 +1,186 @@
+{% extends 'layout.html' %}
+
+
+{% block body %}
+  <div class="m-auto text-light col-sm-6">
+    <div class="card text-center text-dark">
+      <h2 class="card-header py-3">Payment</h2>
+      <div class="card-body">
+        
+        {% if not session.admin %}
+          <p class="lead">Reserver: {{ data["order"].reserver_name }}</p>
+          <p class="lead">Reservation Date: {{ data["order"].reservation_date }} </p>
+          <p class="lead">Order Date: {{ data["order"].order_at }} </p>
+          
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Number</th>
+                <th scope="col">Capacity</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              {% for table in data.tables %}
+                <tr>
+                  <td>Table {{ table.table_number }}</td>
+                  <td>{{ table.table_capacity }}</td>
+                </tr>
+              {% endfor %}
+              
+            </tbody>
+          </table>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Type</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              {% for fnb in data.fnbs %}
+                <tr>
+                  <td>{{ fnb.fnb_type }}</td>
+                  <td>{{ fnb.fnb_name }}</td>
+                  <td>{{ fnb.fnb_price }}</td>
+                  <td>{{ fnb.fnb_quantity }}</td>
+                </tr>
+              {% endfor %}
+              
+            </tbody>
+          </table>
+          
+          
+          {% if session.is_paid == 0 %}
+            <form action="/payment" method="POST">
+              <div class="form-group">
+                <select id="#" name="payment_type" class="form-control" required>
+                  <option value="" selected disabled>Payment Type</option>
+                  <option value="cash">Cash</option>
+                  <option value="debit">Debit</option>
+                  <option value="credit">Credit</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <input type="hidden" name="total_price" value="{{ data.total_price }}">
+                <input type="text" id="#" class="form-control" value="{{ data.total_price }}" disabled>
+              </div>
+              <button type="submit" class="btn btn-primary">Confirm</button>
+            </form>
+
+          {% else %}
+            <p class="lead">Thank you for your visit</p>
+          {% endif %}
+            
+        {% else %}
+          <form action="/payment" method="POST">
+            <div class="form-group">
+              <select id="#" class="form-control" name="order_id" onchange="get_data({{ unpaid_orders }})">
+                <option value="" selected disabled>Order ID</option>
+                
+                {% for unpaid_order in unpaid_orders %}
+                  <option value="{{ unpaid_order['order'].order_id }}">{{ unpaid_order['order'].order_id }}</option>
+                {% endfor %}
+                
+              </select>
+            </div>
+
+            <p class="lead" name="reserver_name"></p>
+            <p class="lead" name="reservation_date"></p>
+            <p class="lead" name="order_at"></p>
+            
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Number</th>
+                  <th scope="col">Capacity</th>
+                </tr>
+              </thead>
+              <tbody name="tables">
+                
+              </tbody>
+            </table>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Type</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Quantity</th>
+                </tr>
+              </thead>
+              <tbody name="fnbs">
+                
+              </tbody>
+            </table>
+            
+            <div class="form-group">
+              <select id="#" class="form-control" name="payment_type">
+                <option value="" selected disabled>Payment Type</option>
+                <option value="cash">Cash</option>
+                <option value="debit">Debit</option>
+                <option value="credit">Credit</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <input type="hidden" name="total_price" value="#">
+              <input type="text" id="price" class="form-control" value="Price..." disabled>
+            </div>
+            <button type="submit" class="btn btn-primary">Confirm</button>
+            <a href="/" class="btn btn-dark">Return</a>
+          </form>
+        {% endif %}
+        
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    function get_data(unpaid_orders) {
+      select = document.querySelector("select[name='order_id']");
+      order_id = select.options[select.options.selectedIndex].value;
+      for (let idx in unpaid_orders) {
+        unpaid_order = unpaid_orders[idx];
+        order = unpaid_order["order"];
+        if (order_id == order.order_id) {
+          document.querySelector("p[name='reserver_name']").innerHTML = "Reserver: " + order.reserver_name;
+          document.querySelector("p[name='reservation_date']").innerHTML = "Reservation_date: " + order.reservation_date;
+          document.querySelector("p[name='order_at']").innerHTML = "Order at: " + order.order_at;
+
+          tables = unpaid_order["tables"];
+          html = "";
+          for (let id in tables) {
+            table = tables[id];
+            html += "<tr>";
+            html += "<td>Table " + table.table_number + "</td>";
+            html += "<td>" + table.table_capacity + "</td>";
+            html += "</tr>";
+          }
+          document.querySelector("tbody[name='tables']").innerHTML = html;
+
+          fnbs = unpaid_order["fnbs"];
+          html = "";
+          for (let id in fnbs) {
+            fnb = fnbs[id];
+            html += "<tr>";
+            html += "<td>" + fnb.fnb_type + "</td>";
+            html += "<td>" + fnb.fnb_name + "</td>";
+            html += "<td>" + fnb.fnb_price + "</td>";
+            html += "<td>" + fnb.fnb_quantity + "</td>";
+            html += "</tr>";
+          }
+          document.querySelector("tbody[name='fnbs']").innerHTML = html;
+
+          document.querySelector("input[name='total_price']").value = unpaid_order["total_price"];
+          document.querySelector("input[id='price']").value = unpaid_order["total_price"];
+
+          break;
+        }
+      }
+    }
+  </script>
+{% endblock body %}

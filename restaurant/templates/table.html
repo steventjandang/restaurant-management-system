@@ -1,0 +1,62 @@
+{% extends 'layout.html' %}
+
+
+{% block body %}
+  <div class="m-auto text-light col-sm-6">
+    <div class="card text-center text-dark">
+      <h2 class="card-header py-3">Table</h2>
+      <div class="card-body">
+        <form action="/table" method="post">
+          <div class="form-group">
+            <select id="#" name="table_id" class="form-control" onchange="get_data({{ tables }})">
+              <option value="" selected disabled>Table ID</option>
+              
+              {% for table in tables %}
+                <option value="{{table.table_id}}">{{table.table_id}}</option>
+              {% endfor %}
+                
+            </select>
+          </div>
+          <div class="form-group">
+            <input type="text" id="#" class="form-control" name="table_number" placeholder="Enter the table number..." required autocomplete="off" autofocus>
+          </div>
+          <div class="form-group">
+            <input type="number" id="#" class="form-control" name="table_capacity" placeholder="Enter the table maximum capacity..." required autocomplete="off" autofocus>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="#" class="form-check-input" name="is_available" value="1" autofocus>
+            <label class="form-check-label" for="#">Available</label>
+          </div>
+          <p class="lead">
+            <button type="submit" class="btn btn-primary" name="submit" value="Add">Add</button>
+            <button type="submit" class="btn btn-warning" name="submit" value="Edit">Edit</button>
+            <button type="submit" class="btn btn-danger" name="submit" value="Delete">Delete</button>
+            <button type="reset" class="btn btn-dark">Reset</button>
+          </p>
+          <a href="/" class="btn btn-dark">Return</a>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    function get_data(tables) {
+      select = document.querySelector("select[name='table_id']")
+      table_id = select.options[select.options.selectedIndex].value;
+      for (let idx in tables) {
+        table = tables[idx]
+        if (table_id == table.table_id) {
+          document.querySelector("input[name='table_number']").value = table.table_number;
+          document.querySelector("input[name='table_capacity']").value = table.table_capacity;
+          
+          if (table.is_available == 1) {
+            document.querySelector("input[name='is_available'").checked = true
+          } else {
+            document.querySelector("input[name='is_available'").checked = false
+          }
+
+          break;
+        }
+      }
+    }
+  </script>
+{% endblock body %}

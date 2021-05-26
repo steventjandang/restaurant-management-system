@@ -1,0 +1,81 @@
+{% extends 'layout.html' %}
+
+
+{% block body %}
+  <div class="m-auto text-light col-sm-6">
+    <div class="card text-center text-dark">
+      <h2 class="card-header py-3">Foods and Beverages</h2>
+      <div class="card-body">
+        <form action="/fnb" method="post">
+          <div class="form-group">
+            <select id="#" name="fnb_id" class="form-control" onchange="get_data({{ fnbs }})">
+              <option value="" selected disabled>Foods and Beverages ID</option>
+              
+              {% for fnb in fnbs %}
+                <option value="{{ fnb.fnb_id }}">{{ fnb.fnb_id }}</option>
+              {% endfor %}
+
+            </select>
+          </div>
+          <div class="form-group">
+            <input type="text" id="#" name="fnb_name" class="form-control" placeholder="Enter the food or beverage name..." required autocomplete="off" autofocus>
+          </div>
+          <div class="form-group">
+            <select id="#" name="fnb_type" class="form-control">
+              <option value="" selected disabled>Type</option>
+              <option value="food">Food</option>
+              <option value="beverage">Beverage</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <textarea id="#" class="form-control" rows="3" name="fnb_description" placeholder="Enter the description..." required autocomplete="off" autofocus></textarea>
+          </div>
+          <div class="form-group">
+            <input type="number" id="#" class="form-control" name="fnb_price" placeholder="Enter the price..." required autocomplete="off" autofocus>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="#" class="form-check-input" name="is_available" value="1" autofocus>
+            <label class="form-check-label" for="#">Available</label>
+          </div>
+          <p class="lead">
+            <button type="submit" class="btn btn-primary" name="submit" value="Add">Add</button>
+            <button type="submit" class="btn btn-warning" name="submit" value="Edit">Edit</button>
+            <button type="submit" class="btn btn-danger" name="submit" value="Delete">Delete</button>
+            <button type="reset" class="btn btn-dark">Reset</button>
+          </p>
+          <a href="/" class="btn btn-dark">Return</a>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    function get_data(fnbs) {
+      select = document.querySelector("select[name='fnb_id']")
+      fnb_id = select.options[select.options.selectedIndex].value;
+      for (let idx in fnbs) {
+        fnb = fnbs[idx];
+        if (fnb_id == fnb.fnb_id) {
+          document.querySelector("input[name='fnb_name']").value = fnb.fnb_name;
+
+          types = document.querySelector("select[name='fnb_type']").options;
+          for (let i = 0; i < types.length; i++) {
+            if(types[i].value == fnb.fnb_type) {
+              types[i].selected = true;
+              break;
+            }
+          }
+
+          document.querySelector("textarea[name='fnb_description']").value = fnb.fnb_description;
+          document.querySelector("input[name='fnb_price']").value = fnb.fnb_price;
+          if (fnb.is_available == 1) {
+            document.querySelector("input[name='is_available'").checked = true
+          } else {
+            document.querySelector("input[name='is_available'").checked = false
+          }
+          
+          break;
+        }
+      }
+    }
+  </script>
+{% endblock body %}

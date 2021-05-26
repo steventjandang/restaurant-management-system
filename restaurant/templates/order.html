@@ -1,0 +1,203 @@
+{% extends 'layout.html' %}
+
+
+{% block body %}
+  <div class="m-auto text-light col-sm-6">
+    <div class="card text-center text-dark">
+      <h2 class="card-header py-3">Order</h2>
+      <div class="card-body">
+        
+        {% if not session.admin %}
+        <form action="/order" method="POST">
+          <div class="form-group">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                {% for fnb in fnbs %}
+                
+                  {% if fnb.is_available == 1 %}
+                    <tr>
+                      <td>
+                        <input type="hidden" name="fnb_ids" value="{{ fnb.fnb_id }}">
+                        <input type="number" id="#" class="form-control" name="quantity" min="0" value="0" required autocomplete="off" autofocus>
+                      </td>
+                      <td>{{ fnb.fnb_name }}</td>
+                      <td>{{ fnb.fnb_description }}</td>
+                      <td>{{ fnb.fnb_type }}</td>
+                      <td>{{ fnb.fnb_price }}</td>
+                    </tr>
+                  {% endif %}
+                  
+                {% endfor %}
+                
+              </tbody>
+            </table>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Order</button>
+          <button type="reset" class="btn btn-dark">Reset</button>
+        </form>
+
+        {% else %}
+
+        <form action="/order" method="POST">
+          <div class="form-group">
+            <select id="#" class="form-control" name="order_id" onchange="get_order({{ orders }})" required>
+              <option value="" selected disabled>Order ID</option>
+              
+              {% for order in orders %}
+                <option value="{{ order['order'].order_id }}">{{ order['order'].order_id }}</option>  
+              {% endfor %}
+              
+            </select>
+          </div>
+          <div class="form-group">
+          <select id="#" class="form-control" name="reservation_id" onchange="get_reservation({{ orders }})" required>
+              <option value="" selected disabled>Reservation ID</option>
+              
+              {% for order in orders %}
+                <option value="{{ order['reservation'].reservation_id }}">{{ order['reservation'].reservation_id }}</option>  
+              {% endfor %}
+              
+            </select>
+          </div>
+          <p class="lead" name="reserver_name"></p>
+          <p class="lead" name="reservation_date"></p>
+          <!-- <div class="form-group">
+            <label class="control-label">Order At</label>
+            <div class='input-group date' id='datetimepicker' required>
+              <input type='text' class="form-control" name="order_at" autocomplete="off" autofocus required/>
+              <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+              </span>
+            </div>
+          </div> -->
+          <div class="form-group">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                {% for fnb in fnbs %}
+                
+                  {% if fnb.is_available == 1 %}
+                    <tr>
+                      <td>
+                        <input type="hidden" name="fnb_ids" value="{{ fnb.fnb_id }}">
+                        <input type="number" id="#" class="form-control" name="quantity" min="0" value="0" required autocomplete="off" autofocus>
+                      </td>
+                      <td>{{ fnb.fnb_name }}</td>
+                      <td>{{ fnb.fnb_description }}</td>
+                      <td>{{ fnb.fnb_type }}</td>
+                      <td>{{ fnb.fnb_price }}</td>
+                    </tr>
+                  {% endif %}
+                  
+                {% endfor %}
+                
+              </tbody>
+            </table>
+            <div class="form-group">
+              <input type="checkbox" id="#" class="form-check-input" name="is_paid" value="1" autofocus>
+              <label class="form-check-label" for="#">Paid</label>
+            </div>
+          </div>
+          <p class="lead">
+            <button type="submit" class="btn btn-primary" name="submit" value="Add">Add</button>
+            <button type="submit" class="btn btn-warning" name="submit" value="Edit">Edit</button>
+            <button type="submit" class="btn btn-danger" name="submit" value="Delete">Delete</button>
+            <button type="reset" class="btn btn-dark">Reset</button>
+          </p>
+          <a href="/" class="btn btn-dark">Return</a>
+        </form>
+
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/momentjs/2.14.1/moment.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script>
+    $(function () {
+      $('#datetimepicker').datetimepicker();
+    });
+  </script> -->
+  <script type="text/javascript">
+    function get_order(orders, reservations) {
+      select = document.querySelector("select[name='order_id']");
+      order_id = select.options[select.options.selectedIndex].value;
+      for (let idx in orders) {
+        order = orders[idx]["order"];
+        reservation = orders[idx]["reservation"];
+
+        if (order_id == order.order_id) {
+          fnbs = orders[idx]["fnbs"];
+
+          document.querySelector("select[name='reservation_id']").value = order.reservation_id;
+
+          get_reservation(orders);
+
+          // document.querySelector("input[name='order_at']").value = order.order_at;
+
+          fnb_ids = document.querySelectorAll("input[name='fnb_ids']");
+          quantities = document.querySelectorAll("input[name='quantity']");
+
+          for (let i = 0; i < quantities.length; i++) {
+            quantities[i].value = 0;
+          }
+          
+          for (let id in fnbs) {
+            fnb = fnbs[id];
+            
+            for (let i = 0; i < fnb_ids.length; i++) {
+              if (fnb_ids[i].value == fnb.fnb_id) {
+                quantities[i].value = fnb.fnb_quantity;
+              }
+            }
+          }
+
+          if (order.is_paid == 1) {
+            document.querySelector("input[name='is_paid']").checked = true
+          } else {
+            document.querySelector("input[name='is_paid']").checked = false
+          }
+
+          break;
+        }
+      }
+    }
+
+    function get_reservation(orders) {
+      select = document.querySelector("select[name='reservation_id']");
+      reservation_id = select.options[select.options.selectedIndex].value;
+
+      for (let idx in orders) {
+        reservation = orders[idx]["reservation"]
+        if (reservation_id == reservation.reservation_id) {
+          document.querySelector("p[name='reserver_name']").innerHTML = "Reserver: " + reservation.reserver_name;
+          document.querySelector("p[name='reservation_date']").innerHTML = "Reservation: " + reservation.reservation_date;
+          break;
+        }
+      }
+    }
+  </script>
+{% endblock body %}

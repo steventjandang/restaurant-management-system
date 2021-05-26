@@ -1,0 +1,131 @@
+{% extends 'layout.html' %}
+
+
+{% block body %}
+  <div class="m-auto text-light col-sm-6">
+    <div class="card text-center text-dark">
+      <h2 class="card-header py-3">Reservation</h2>
+      <div class="card-body">
+        
+        {% if not session.admin %}
+
+          <form action="/reservation" method="post">
+            <div class="form-group">
+              <input type="text" id="#" class="form-control" name="reserver_name" placeholder="Enter the reserver name..." required autocomplete="off" autofocus>
+            </div>
+            <div class="form-group">
+              <label for="#">Select the tables</label>
+              <select multiple id="#" class="form-control" name="table_ids" required>
+                {% for table in tables %}
+                  
+                  {% if table.is_available == 1 %}
+                    <option value="{{ table.table_id }}">Table {{ table.table_number }} Capacity: {{ table.table_capacity }}</option>
+                  {% endif %}
+
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Reservation Time</label>
+              <div class='input-group date' id='datetimepicker'>
+                <input type='text' class="form-control" name="reservation_date" autocomplete="off" autofocus required>
+                <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Reserve Tables</button>
+            <button type="reset" class="btn btn-dark">Reset</button>
+          </form>
+
+        {% else %}
+
+          <form action="/reservation" method="post">
+            <div class="form-group">
+              <select id="#" class="form-control" name="reservation_id" onchange="get_data({{ reservations }})" required>
+                <option value="" selected disabled>Reservation ID</option>
+                
+                {% for reservation in reservations %}
+                  <option value="{{ reservation['reservation'].reservation_id }}">{{ reservation['reservation'].reservation_id }}</option>
+                {% endfor %}
+                
+              </select>
+            </div>
+            <div class="form-group">
+              <input type="text" id="#" class="form-control" name="reserver_name" placeholder="Enter the reserver name..." autocomplete="off" autofocus required>
+            </div>
+            <div class="form-group">
+              <label for="#">Select the tables</label>
+              <select multiple id="#" class="form-control" name="table_ids" required>
+
+                {% for table in tables %}
+                  <option value="{{ table.table_id }}">Table {{ table.table_number }} Capacity: {{ table.table_capacity }}</option>  
+                {% endfor %}
+
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Reservation Time</label>
+              <div class='input-group date' id='datetimepicker' required>
+                <input type='text' class="form-control" name="reservation_date" autocomplete="off" autofocus required>
+                <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
+            </div>
+            <p class="lead">
+              <button type="submit" class="btn btn-primary" name="submit" value="Add">Add</button>
+              <button type="submit" class="btn btn-warning" name="submit" value="Edit">Edit</button>
+              <button type="submit" class="btn btn-danger" name="submit" value="Delete">Delete</button>
+              <button type="reset" class="btn btn-dark">Reset</button>
+            </p>
+            <a href="/" class="btn btn-dark">Return</a>
+          </form>
+
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/momentjs/2.14.1/moment.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script>
+    $(function () {
+      $('#datetimepicker').datetimepicker();
+    });
+  </script>
+  <script type="text/javascript">
+    function get_data(reservations) {
+      select = document.querySelector("select[name='reservation_id']");
+      reservation_id = select.options[select.options.selectedIndex].value;
+
+      for (let idx in reservations) {
+        reservation = reservations[idx]["reservation"];
+
+        if (reservation.reservation_id == reservation_id) {
+          document.querySelector("input[name='reserver_name']").value = reservation.reserver_name;
+
+          table_options = document.querySelector("select[name='table_ids']").options;
+
+          tables = reservations[idx]["tables"];
+          for (let i = 0; i < table_options.length; i++) {
+            table_options[i].selected = false;
+          }
+          for (let i = 0; i < tables.length; i++) {
+            for (let j = 0; j < table_options.length; j++) {
+              if (tables[i].table_id == table_options[j].value) {
+                table_options[j].selected = true;
+              }
+            }
+          }
+
+          document.querySelector("input[name='reservation_date']").value = reservation.reservation_date;
+          break;
+        }
+      }
+    }
+  </script>
+{% endblock body %}

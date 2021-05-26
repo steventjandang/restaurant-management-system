@@ -1,0 +1,22 @@
+INSERT INTO tables (table_number, table_capacity, is_available) VALUES (1, 2, 1);
+INSERT INTO tables (table_number, table_capacity, is_available) VALUES (2, 4, 1);
+INSERT INTO tables (table_number, table_capacity, is_available) VALUES (3, 2, 1);
+INSERT INTO tables (table_number, table_capacity, is_available) VALUES (4, 6, 1);
+INSERT INTO tables (table_number, table_capacity, is_available) VALUES (5, 4, 1);
+INSERT INTO fnbs (fnb_type, fnb_name, fnb_description, fnb_price, is_available) VALUES ("food", "Potato Skins", "with melty mozzarella, cheddar and bacon", 20000, 1);
+INSERT INTO fnbs (fnb_type, fnb_name, fnb_description, fnb_price, is_available) VALUES ("food", "Cheese Quesadilla", "flour tortillas with three types of cheese, guacamole, salsa and sour cream", 17500, 1);
+INSERT INTO fnbs (fnb_type, fnb_name, fnb_description, fnb_price, is_available) VALUES ("food", "Sweet Potato Fries", "hand cut fries with honey dijon dipping sauce", 15000, 1);
+INSERT INTO fnbs (fnb_type, fnb_name, fnb_description, fnb_price, is_available) VALUES ("beverage", "Tropicana", "watermelon, orange & pineapple", 15000, 1);
+INSERT INTO fnbs (fnb_type, fnb_name, fnb_description, fnb_price, is_available) VALUES ("beverage", "Iron Beats", "beetroot, apple & lemon", 15000, 1);
+INSERT INTO fnbs (fnb_type, fnb_name, fnb_description, fnb_price, is_available) VALUES ("beverage", "Cold Relief", "orange, apple, lemon & ginger", 15000, 1);
+util.add_table(1, 2, util.TRUE)
+util.add_table(2, 4, util.TRUE)
+util.add_table(3, 2, util.TRUE)
+util.add_table(4, 6, util.TRUE)
+util.add_table(5, 4, util.TRUE)
+util.add_fnb("food", "Potato Skins", "with melty mozarella, cheddar and bacon", 20000, util.TRUE)
+util.add_fnb("food", "Cheese Quesadilla", "flour toritllas with three types of cheese, guacamole, salsa and sour scream", 17500, util.TRUE)
+util.add_fnb("food", "Sweet Potato", "hand cur frieds with honeydijon dipping sauce", 15000, util.TRUE)
+util.add_fnb("beverage", "Tropicana", "watermelon, orange & pineapple", 15000, util.TRUE)
+util.add_fnb("beverage", "Iron Beats", "beetroot, apple & lemon", 15000, util.TRUE)
+util.add_fnb("beverage", "Cold Relief", "orange, apple, lemon & ginger", 15000, util.TRUE)

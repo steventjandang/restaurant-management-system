@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+
+{% block body %}
+  <div class="m-auto text-light col-sm-6">
+    <div class="card text-center text-dark">
+      <h2 class="card-header py-3">Login</h2>
+      <div class="card-body">
+        <form action="/login" method="POST">
+          <div class="form-group">
+            <input type="text" id="#" class="form-control" name="username" placeholder="Username..." autocomplete="off" autofocus required>
+          </div>
+          <div class="form-group">
+            <input type="password" id="#" class="form-control" name="password" placeholder="Password..." autocomplete="off" autofocus required>
+          </div>
+          <button type="submit" class="btn btn-primary">Login</button>
+          <a href="/" class="btn btn-dark">Return</a>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock body %}
